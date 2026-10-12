@@ -11,7 +11,7 @@ Our goal is not to claim that grocery stores cause or prevent diabetes. We want 
 Each member will lead one area throughout the project and contribute to the related parts of this plan and later reports. Everyone will review the work, and each member will commit their own contributions to the shared repository.
 
 | Member | Primary responsibility |
-|---|---|
+|---|---| 
 | Haoxuan Lyu | Integration and analysis: join the data, calculate grocery stores per 10,000 residents, and lead analysis and visualization. |
 | Jihyun Seo (Ji) | Data quality and cleaning: profile the data, assess quality, document issues, and implement cleaning. |
 | Ayan Bhakta | Workflow and reproducibility: organize scripts and the run-all workflow, dependencies, relative paths, metadata, and reproduction instructions. |
