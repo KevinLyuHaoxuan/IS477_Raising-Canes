@@ -27,11 +27,11 @@ These roles identify primary owners, not separate silos. Members will review dec
 
 We will use three complementary, non-Kaggle datasets, each with far more than 100 county records. Each adds information needed for the question.
 
-1. **USDA Food Environment Atlas, archived 2020 data.** We will use the county-level 2020 grocery-store count (`GROC20`) and county FIPS/GEOID. USDA defines grocery stores as supermarkets and grocery stores in NAICS 445110. This provides the store-availability measure.
+1. **USDA Food Environment Atlas, current release (2020 store counts).** We will use the county-level 2020 grocery-store count (`GROC20`) and county FIPS/GEOID. USDA defines grocery stores as supermarkets and grocery stores in NAICS 445110. This provides the store-availability measure.
 2. **CDC PLACES County Data, 2024 release, GIS-friendly format.** We will use `countyfips` and `DIABETES_CrudePrev`, the model-based estimate of crude adult diabetes prevalence for 2022. This provides the health outcome. The release has 3,144 county-level records and uses BRFSS, Census population estimates, and ACS data to produce its estimates.
 3. **U.S. Census Bureau Population Estimates Program, county totals, 2020–2024.** We will use `SUMLEV`, `STATE`, `COUNTY`, and `POPESTIMATE2020`, keeping county-level rows. We will zero-pad and combine the state and county FIPS components to create the five-character join key. This provides the population denominator, allowing store availability to be compared across counties of different sizes.
 
-We will store FIPS codes as text to preserve leading zeros and join using exact matches. A preliminary check found about 2,226 counties with usable data after excluding missing USDA store counts; our scripts will recalculate this number and document the final match rate. County-equivalent definitions can change between data vintages, so we will investigate and report unmatched codes rather than force uncertain name-based matches.
+We will store FIPS codes as text to preserve leading zeros and join using exact matches. A preliminary check found about 2,226 counties with usable data after excluding missing USDA store counts; our scripts will recalculate this number and document the final match rate. County-equivalent definitions can change between data vintages, so we will investigate and report unmatched codes rather than force uncertain name-based matches. One known case is Connecticut: the 2024 Census file uses the state's new planning-region codes, while the other sources may still use the old county codes, so those rows may not match.
 
 ## Lifecycle, Organization, and Methods
 
@@ -43,11 +43,11 @@ Cleaning will be limited to reproducible, documented steps. We will convert USDA
 
 After integration, we will reassess accuracy, completeness, timeliness, and consistency. We will check join cardinality and match rate, duplicate keys, missingness, plausible ranges, and the derived store-rate calculation. These results will show whether the join worked and where coverage is limited. We will then produce descriptive statistics and a scatterplot. The analysis will remain simple; the main emphasis is a clear curation chain.
 
-## Ethics, Terms, and Constraints
+## Constraints
 
-These sources contain county-level aggregate statistics, not personal records, so we do not expect to handle personally identifiable information. CDC metadata identifies its dataset as public domain. Before redistributing source files, we will verify reuse and attribution terms for all sources, cite them, preserve their documentation, and record data and software licenses in the repository. We plan to include input files in GitHub if they are redistributable and below the course's 50 MB limit; otherwise, we will follow the course's Box and download-code instructions.
+**Ethics and terms.** These sources contain county-level aggregate statistics, not personal records, so we do not expect to handle personally identifiable information. CDC metadata identifies its dataset as public domain. Before redistributing source files, we will verify reuse and attribution terms for all sources, cite them, preserve their documentation, and record data and software licenses in the repository. We plan to include input files in GitHub if they are redistributable and below the course's 50 MB limit; otherwise, we will follow the course's Box and download-code instructions.
 
-The CDC diabetes values are modeled estimates, not direct counts. Grocery-store counts do not represent store size, prices, quality, or where residents shop. The store and population measures are from 2020 while the CDC estimate is for 2022, so the periods are not identical. County-level results cannot establish individual behavior or causation. FIPS changes may also leave some counties unmatched. We will report these limits and avoid overstating conclusions.
+**Data limitations.** The CDC diabetes values are modeled estimates, not direct counts. Grocery-store counts do not represent store size, prices, quality, or where residents shop. The store and population measures are from 2020 while the CDC estimate is for 2022, so the periods are not identical. County-level results cannot establish individual behavior or causation. FIPS changes, including Connecticut's switch to planning regions, may also leave some counties unmatched. We will report these limits and avoid overstating conclusions.
 
 ## Workflow and Reproducibility
 
@@ -69,7 +69,7 @@ We will create separate scripts for acquisition and SHA-256 checksums, source pr
 
 ## Gaps
 
-We still need to confirm the exact fields in the selected USDA archive, verify current reuse terms, and quantify unmatched county FIPS codes. We will also confirm the repository layout and agree on a final peer-review schedule. These open items will be checked during acquisition and do not change the proposed question or linkage strategy.
+We still need to record the exact USDA release date we download, verify current reuse terms, and quantify unmatched county FIPS codes, including how to handle Connecticut. We will also confirm the repository layout and agree on a final peer-review schedule. These open items will be checked during acquisition and do not change the proposed question or linkage strategy.
 
 ## References
 
