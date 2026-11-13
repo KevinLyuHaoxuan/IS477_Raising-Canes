@@ -1,48 +1,50 @@
-# Interim Status Report — County Grocery Store Availability and Diabetes Prevalence
+# Interim Status Report
 
-**IS 477 · Team Raising Canes · November 13, 2026**
+**Raising Canes · IS 477 · November 13, 2026**
 
-## Project status
+## What we’re studying
 
-Our project asks whether U.S. counties with fewer grocery stores per 10,000 residents tend to have higher estimated adult diabetes prevalence. The [current project plan](ProjectPlan.md) specifies three complementary sources and the county Federal Information Processing Standards (FIPS) code as the linkage key. USDA supplies the store count, Census supplies the population denominator, and CDC supplies the health measure. This is a county-level observational comparison, so the final interpretation will be limited to the association we observe across counties with usable data.
+Do U.S. counties with fewer grocery stores per 10,000 residents tend to have higher adult diabetes prevalence? To answer that, we need three pieces of information for each county: a grocery store count from the USDA, a population estimate from the Census Bureau, and a diabetes prevalence estimate from the CDC. Dividing store counts by population lets us compare counties of different sizes. For example, ten grocery stores mean something different in a county of 20,000 people than in a county of 200,000.
 
-The [project-plan release](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/releases/tag/project-plan) is published. The [repository README](README.md) identifies the team, and the current plan defines the research question, source fields, roles, and proposed quality checks. As of this update, the shared Git history supports reporting progress on planning and source selection. Acquisition, cleaning, integration, and analysis remain pending verification against committed artifacts. The plan mentions a preliminary estimate of about 2,226 usable counties after excluding missing USDA counts. We will recalculate that figure from the pinned inputs and publish a record of exclusions and join losses before citing a final sample size.
+The [project plan](ProjectPlan.md) and [October 12 release](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/releases/tag/project-plan) are on GitHub. The plan records a preliminary count of about 2,226 usable counties after excluding missing USDA store counts. That is a starting point for checking our results. The final count will come from the scripted join and will include a breakdown of counties that failed to match or were missing one of the measures. The shared repository currently contains the plan and report documents. The dataset files, code, and outputs still need to be added for review.
 
-## Progress by task
+## Where each part of the project stands
 
-**Source selection and acquisition — Rishi Vemulapalli, with automation support from Ayan Bhakta.** The plan identifies USDA Food Environment Atlas `GROC20`, CDC PLACES 2024 GIS-friendly county data `DIABETES_CrudePrev`, and Census Population Estimates Program county totals `POPESTIMATE2020`. The next deliverable is a source manifest containing the exact file or archive member for each input, the source URL, release vintage, retrieval date, reuse terms, and SHA-256 checksum. The acquisition script should place unchanged inputs under `data/raw/` and verify pinned hashes on subsequent runs. USDA’s exact release vintage and redistribution terms still need confirmation. Raw files eligible for GitHub distribution can be committed there. Files subject to the course’s Box requirement will need a grader-accessible link and tested download code.
+### Acquisition and source documentation
 
-**Source profiling and cleaning — Jihyun Seo, with source-definition review from Rishi.** The plan defines checks across accuracy, completeness, timeliness, and consistency. Accuracy checks include prevalence between zero and 100 and a positive population. Completeness checks include missing measures, sentinel values, and absent county records. Timeliness checks will record both observation year and publication vintage. Consistency checks will confirm units, five-character FIPS formatting, and uniqueness of the county key. The next deliverable is a reproducible profile with counts for each source, followed by a cleaning script that addresses the observed issues. The script should retain genuine zero store counts, convert the documented USDA sentinel values to missing, and filter the Census input to county-level records before building the key from its state and county fields.
+Rishi is leading acquisition, with Ayan helping automate it. We’ve identified the exact fields for the analysis. The [USDA Food Environment Atlas](https://www.ers.usda.gov/data-products/food-environment-atlas/data-access-and-documentation-downloads) supplies the 2020 grocery store count, `GROC20`. The [Census county population file](https://www2.census.gov/programs-surveys/popest/datasets/2020-2024/counties/totals/co-est2024-alldata.csv) supplies `POPESTIMATE2020`. The [2024 CDC PLACES county release](https://data.cdc.gov/500-Cities-Places/PLACES-County-Data-GIS-Friendly-Format-2024-releas/d3i6-k6z5) supplies `DIABETES_CrudePrev`, which estimates prevalence in 2022.
 
-**Integration, post-integration quality, and initial analysis — Haoxuan Lyu, with quality review from Jihyun.** The planned join uses exact five-character county identifiers. The next deliverable is a join audit with source counts, unique keys, overlaps, unmatched keys by source, and counts of rows removed from the analysis table. The integration script should check one-to-one join cardinality and flag duplicates for review. The post-integration assessment should verify the rate calculation, check missingness and coverage after joining, carry the observation years forward, and confirm a consistent county-level schema. For the first analysis, the team will report descriptive statistics, a scatterplot, and a correlation for grocery stores per 10,000 residents versus modeled adult diabetes prevalence.
+The main open item is recording the exact USDA release and file used. We’ll document each source URL, download date, release vintage, reuse terms, and SHA-256 checksum. That gives us a way to tell if a download changes between runs. We’ll keep the downloaded files as received and write cleaned versions separately. Before uploading any input, we’ll confirm its redistribution terms and size. If an input needs to go on Box under the course rules, we’ll test the download and verify that the graders can access it.
 
-**Workflow, documentation, and reproducibility — Ayan, with testing by the team.** The plan specifies separate scripts for acquisition, profiling, cleaning, integration and validation, and analysis. The next deliverable is the stage interface and a `run_all.py` entry point that calls the scripts in order and stops when a stage fails. Each stage should read and write documented repository-relative paths so a teammate can rerun it independently. The final documentation will include dependency versions, reproduction commands, a data dictionary, machine-readable metadata, source citations, and data and software licensing information. The final test will use a fresh clone and compare the resulting outputs against the committed analysis.
+### Quality assessment and cleaning
 
-## Changes to the plan and challenges
+Jihyun is leading this part, with Rishi checking the source definitions. Before joining anything, we’ll profile the three inputs and save the counts. For accuracy, we’ll check for prevalence outside zero to 100 and population values at or below zero. For completeness, we’ll count missing values and look for county records missing from each source. For timeliness, we’ll record the year each measure describes alongside its publication year. For consistency, we’ll check that county codes follow the same format, that each source has one row per county after filtering, and that each measure uses the expected units.
 
-The [documented plan revision](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/commit/8e8e0d0833dfdd9314582d173200137f8ce04601) updates the USDA dataset and expands the constraints. We are carrying that revision forward and moving the original October and early November targets to the proposed dates below because the corresponding deliverables have yet to be verified in GitHub. Instructor feedback for Milestone 2 has yet to be confirmed for this report. Once available, the team should tie each resulting change to the relevant plan section or artifact.
+The biggest cleaning decision is how to handle missing store counts. We’ll check the source documentation for `N/A`, `-9999`, and `-8888` and convert documented missing-value codes before calculating rates. A genuine zero remains in the analysis because zero stores is a meaningful count. We’ll filter the Census file to county rows and build the join key by combining the two-digit state code and three-digit county code. We’ll preserve leading zeros across all three files and log which rows fail the checks, so a reader can trace why each row was excluded.
 
-- **Changing county boundaries.** The Census vintage uses Connecticut planning regions, which may differ from the geographic units in the other sources. The join audit will list those keys and count their exclusions. Any geographic crosswalk would require a documented mapping that preserves the intended unit of analysis.
-- **Missing and invalid values.** A missing store count changes which counties enter the analysis. The cleaning step will preserve valid zeroes, record each exclusion reason, and summarize whether exclusions are geographically concentrated. A missing or nonpositive population makes the store rate undefined.
-- **Different measurement years.** Store availability and population use 2020 values, while the CDC estimate describes 2022. The analysis will label these years in the table, figure, and narrative. It will also describe the CDC measure as modeled and explain that a store count measures availability only at the county level.
-- **Reproducible inputs.** Publisher downloads may change over time. The source manifest will identify the exact snapshot, hash, and retrieval method. A fresh-clone test will check whether all inputs can be acquired and processed using the documented commands.
+### Joining the sources and checking the result
 
-## Updated timeline
+Haoxuan is leading integration and analysis, with Jihyun reviewing the quality checks. We’ll join on the five-character county FIPS code and check for duplicate keys before merging. Connecticut is the first place we’ll investigate if the keys don’t line up. The Census vintage uses planning regions, and the other files may use older county boundaries. Joining those rows by a similar name could attach a store count to the wrong population. We’ll list the unmatched identifiers and report how many counties the mismatch affects.
 
-The dates below are proposed working targets. The milestone release should follow the deadline shown in Canvas.
+After the join, we’ll check the four quality dimensions again. We’ll recalculate the store rate from the source fields to check accuracy, compare the final row count with the source and overlap counts to check completeness, verify that the year labels stayed with the measures, and check that the merged table still has one row per FIPS code. Then we’ll make a scatterplot and calculate the correlation. We’ll report how many counties appear in the figure and examine whether exclusions are concentrated in particular states. The 2020 store measure and the 2022 health measure are two years apart, and a county-level comparison can describe an association across counties.
 
-| Task | Status | Proposed target and lead |
-|---|---|---|
-| Project plan and release | Published | Oct. 12, all members |
-| Confirm inputs, terms, and checksums | Sources selected, artifacts pending verification | Nov. 15, Rishi and Ayan |
-| Profile sources and implement cleaning | Checks specified, results pending verification | Nov. 18, Jihyun and Rishi |
-| Join, validate, and produce initial analysis | Linkage designed, outputs pending verification | Nov. 22, Haoxuan and Jihyun |
-| Connect workflow stages and document dependencies | Structure specified, execution pending verification | Nov. 24, Ayan |
-| Update report, commit work, and publish interim release | Report drafted, individual commits and release pending | By Canvas deadline, all members |
-| Finish analysis, metadata, codebook, licensing, and README | Planned | Dec. 2, all members by role |
-| Test from a fresh clone and complete final review | Planned | Dec. 3–6, Ayan coordinates and all members test |
-| Publish final release and submit its URL | Planned | Dec. 7, all members |
+One result we’ll look at closely is how the sample changes from one step to the next. We’ll start with the county counts for each source, then show how many counties share a key and how many still have all three usable measures. That breakdown will help explain any difference from the preliminary 2,226 figure. If missing grocery counts account for most of the drop, we’ll check which states account for those missing records. If the drop happens during the join, we’ll inspect the unmatched codes and compare the county definitions in the source documentation.
 
-## Individual contribution summaries
+### Putting the workflow together
 
-Each team member will add a short summary of their own completed work to this section and commit it from their GitHub account. The [team section of the project plan](ProjectPlan.md#team) records assigned responsibilities. Individual summaries will identify the work completed for this milestone and link to the corresponding files or commits.
+Ayan is responsible for connecting the stages and documenting how to run them. The workflow will use separate scripts for acquisition, profiling, cleaning, joining and validating, and analysis. A `run_all.py` script will call them in that order and stop if a stage fails. We’ll agree on input and output filenames before wiring the scripts together, so a teammate can rerun the cleaning or join step on its own. The final README will include the installation and run commands, pinned dependencies, and links to the outputs. We’ll also add a codebook and machine-readable metadata, then test the instructions from a fresh clone.
+
+## Changes since the project plan
+
+The [revision on GitHub](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/commit/8e8e0d0833dfdd9314582d173200137f8ce04601) updates the USDA source and expands the constraints section. The research question and county FIPS linkage are still the basis of the project. The original schedule called for acquisition by October 20, cleaning by October 30, and the first join and plot by November 7. The shared repository still needs the files that would demonstrate those steps, so the dates below are revised targets for getting the work into GitHub. We still need to check the Milestone 2 feedback in Canvas and record any changes it calls for in the project plan.
+
+## Revised schedule
+
+- **November 15:** Rishi will confirm the source snapshots and reuse terms. Ayan will help document retrieval and checksum verification.
+- **November 18:** Jihyun will aim to commit the source profiles and cleaning steps. Rishi will review how the scripts interpret source fields and missing-value codes.
+- **November 22:** Haoxuan will aim to commit the merged county data, join audit, and initial scatterplot. Jihyun will review the exclusions and merged-table checks.
+- **November 24:** Ayan will aim to connect the scripts, document dependencies, and run the workflow from acquisition through the first plot.
+- **December 2:** The team will finish the analysis, codebook, metadata, licensing, and final README.
+- **December 3–7:** The team will test the workflow from a fresh clone December 3–6 and target December 7 for the final release.
+
+For the interim milestone, each team member will add their own contribution summary to this report and commit it under their GitHub account. The team will push the work available by the Canvas deadline and use that snapshot for the `status-report` release.
