@@ -6,7 +6,7 @@
 
 Do U.S. counties with fewer grocery stores per 10,000 residents tend to have higher adult diabetes prevalence? To answer that, we need three pieces of information for each county: a grocery store count from the USDA, a population estimate from the Census Bureau, and a diabetes prevalence estimate from the CDC. Dividing store counts by population lets us compare counties of different sizes. For example, ten grocery stores mean something different in a county of 20,000 people than in a county of 200,000.
 
-The [project plan](ProjectPlan.md) and [October 12 release](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/releases/tag/project-plan) are on GitHub. The plan records a preliminary count of about 2,226 usable counties after excluding missing USDA store counts. That is a starting point for checking our results. The final count will come from the scripted join and will include a breakdown of counties that failed to match or were missing one of the measures. The shared repository currently contains the plan and report documents. The dataset files, code, and outputs still need to be added for review.
+The [project plan](ProjectPlan.md) and [October 12 release](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/releases/tag/project-plan) are on GitHub. The plan records a preliminary count of about 2,226 usable counties after excluding missing USDA store counts. That is a starting point for checking our results. The final count will come from the scripted join and will include a breakdown of counties that failed to match or were missing one of the measures. The shared repository currently contains the plan and report documents. Data acquisition, cleaning, integration, and analysis are not yet complete.
 
 ## Where each part of the project stands
 
@@ -36,11 +36,14 @@ Ayan is responsible for connecting the stages and documenting how to run them. T
 
 ## Changes since the project plan
 
-The [revision on GitHub](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/commit/8e8e0d0833dfdd9314582d173200137f8ce04601) updates the USDA source and expands the constraints section. The research question and county FIPS linkage are still the basis of the project. The original schedule called for acquisition by October 20, cleaning by October 30, and the first join and plot by November 7. The shared repository still needs the files that would demonstrate those steps, so the dates below are revised targets for getting the work into GitHub. We still need to check the Milestone 2 feedback in Canvas and record any changes it calls for in the project plan.
+The [revision on GitHub](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/commit/8e8e0d0833dfdd9314582d173200137f8ce04601) updates the USDA source and expands the constraints section. The research question and county FIPS linkage are still the basis of the project. The original schedule called for acquisition by October 20, cleaning by October 30, and the first join and plot by November 7. The shared repository still needs the files that would demonstrate those steps, so the dates below are revised targets for getting the work into GitHub. The Milestone 2 submission received 20 out of 20. The instructor's written comment praised the detail of the plan and did not identify a specific revision. The USDA and constraints changes linked above were made on October 12, before that feedback was posted on November 2, so they are not presented as changes made in response to it.
 
 ## Revised schedule
 
+The following dates are proposed targets for the remaining work, not a record of completed tasks. Canvas lists the interim report deadline as November 16 at 3:30 p.m. The report and available work must be pushed and released by that deadline, even if the later technical stages remain unfinished.
+
 - **November 15:** Rishi will confirm the source snapshots and reuse terms. Ayan will help document retrieval and checksum verification.
+- **November 16 by 3:30 p.m.:** All members will add their own contribution summaries, commit the work available for review, and create the `status-report` release. The release URL will be submitted through Canvas.
 - **November 18:** Jihyun will aim to commit the source profiles and cleaning steps. Rishi will review how the scripts interpret source fields and missing-value codes.
 - **November 22:** Haoxuan will aim to commit the merged county data, join audit, and initial scatterplot. Jihyun will review the exclusions and merged-table checks.
 - **November 24:** Ayan will aim to connect the scripts, document dependencies, and run the workflow from acquisition through the first plot.
@@ -48,3 +51,9 @@ The [revision on GitHub](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/
 - **December 3–7:** The team will test the workflow from a fresh clone December 3–6 and target December 7 for the final release.
 
 For the interim milestone, each team member will add their own contribution summary to this report and commit it under their GitHub account. The team will push the work available by the Canvas deadline and use that snapshot for the `status-report` release.
+
+## Individual contribution summary
+
+### Haoxuan Lyu
+
+I contributed the initial [project plan](https://github.com/KevinLyuHaoxuan/IS477_Raising-Canes/commit/77a7a314d238262246c875247079390365ccf4a6), which defined the county-level research question, the three sources, and the proposed FIPS-based integration and analysis. This contribution was made for the earlier project-plan milestone. For the current milestone, my assigned responsibility is to develop the integration and analysis once the source and cleaning outputs are available. The join, its quality checks, and the initial figure are not yet complete.
